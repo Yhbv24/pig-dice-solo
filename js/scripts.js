@@ -1,16 +1,21 @@
 //*****BACK-END*****
 
-function Player(name, score) {
+function Player(name, score, totalScore) {
   this.name = name;
   this.score = 0;
+  this.totalScore = 0;
 }
 
 Player.prototype.addToScore = function() {
   this.score += rollDie();
 }
 
+function turnMaker() {
+  return Math.floor(Math.random() * 2) + 1;
+}
+
 function rollDie() {
-  return Math.floor(Math.random() * 6) + 2;
+  return Math.floor(Math.random() * 6) + 1;
 }
 
 var turn = true;
@@ -33,36 +38,50 @@ $(function() {
     playerOne = new Player(playerOneName, 0);
     playerTwo = new Player(playerTwoName, 0);
 
-    if (!playerOneName || !playerTwoName) {
+    if (!playerOneName || !playerTwoName) { // Checks to see whether users entered something into the name fields
       alert("Please make sure to enter your name!");
       codeBreak;
     }
 
+    var getStart = turnMaker();
+
+    if (getStart === 2) { // Rolls a 1 or 2 to determine which player goes first
+      turn = !turn;
+    }
+
     $("#user_entry").hide();
+    $("#roll_place").show();
     $("#gameboard").show();
 
-    $("#player_1_info").append("<h3>" + playerOne.name + "</h3><br><h3>" + playerOne.score + "</h3>");
-    $("#player_2_info").append("<h3>" + playerTwo.name + "</h3><br><h3>" + playerOne.score + "</h3>");
+    $("#player_1_info").empty().append("<h3>" + playerOne.name + " | Total Wins: " + playerOne.totalScore + "</h3><br><h3>" + playerOne.score + "</h3>");
+    $("#player_2_info").empty().append("<h3>" + playerTwo.name + " | Total Wins: " + playerTwo.totalScore + "</h3><br><h3>" + playerTwo.score + "</h3>");
     $("#buttons").append("<br><button type=\"button\" id=\"roll\" class=\"btn\">Roll!</button> <button type=\"button\" id=\"end_turn\" class=\"btn\">End Turn</button>");
+    $("#temp_score").text(tempScore);
+    $("#roll_score").text("0");
 
     $("#roll").click(function() {
+      var roll = rollDie();
+      $("#roll_score").text(roll);
+
       if (turn) {
-        rollDie();
-        $("#temp_roll_score").empty().append("<h3>Current total: " + tempScore + "!</h3>");
-        if (rollDie() === 1) {
+        if (roll === 1) {
           alert("You got a one, and thus, you lose!");
           switchTurn();
+          tempScore = 0;
+          $("#roll_score").text(0);
         } else {
-          tempScore += rollDie();
+          tempScore += roll;
+          $("#temp_score").text(tempScore);
         }
       } else if (!turn) {
-        rollDie();
-        $("#temp_roll_score").empty().append("<h3>Current total: " + tempScore + "!</h3>");
-        if (rollDie() === 1) {
+        if (roll === 1) {
           alert("You got a one, and thus, you lose!");
           switchTurn();
+          tempScore = 0;
+          $("#roll_score").text(0);
         } else {
-          tempScore += rollDie();
+          tempScore += roll;
+          $("#temp_score").text(tempScore);
         }
       }
     });
@@ -70,14 +89,40 @@ $(function() {
     $("#end_turn").click(function() {
       if (turn) {
         playerOne.score += tempScore;
-        $("#player_1_info").empty().append("<h3>" + playerOne.name + "</h3><br><h3>" + playerOne.score + "</h3>");
-        tempScore = 0;
+
+        if (playerOne.score >= 100) {
+          alert(playerOne.name + " wins!");
+          tempScore = 0;
+          playerOne.score = 0;
+          playerTwo.score = 0;
+          playerOne.totalScore += 1;
+          $("#player_1_info").empty().append("<h3>" + playerOne.name + " | Total Wins: " + playerOne.totalScore + "</h3><br><h3>" + 0 + "</h3>");
+          $("#player_2_info").empty().append("<h3>" + playerTwo.name + " | Total Wins: " + playerTwo.totalScore + "</h3><br><h3>" + 0 + "</h3>");
+        }
+
         switchTurn();
+        $("#roll_score").text(0);
+        $("#temp_score").text(0);
+        $("#player_1_info").empty().append("<h3>" + playerOne.name + " | Total Wins: " + playerOne.totalScore + "</h3><br><h3>" + playerOne.score + "</h3>");
+        tempScore = 0;
       } else if (!turn) {
         playerTwo.score += tempScore;
-        $("#player_2_info").empty().append("<h3>" + playerTwo.name + "</h3><br><h3>" + playerTwo.score + "</h3>");
-        tempScore = 0;
+
+        if (playerTwo.score >= 100) {
+          alert(playerTwo.name + " wins!");
+          tempScore = 0;
+          playerOne.score = 0;
+          playerTwo.score = 0;
+          playerTwo.totalScore += 1;
+          $("#player_2_info").empty().append("<h3>" + playerTwo.name + " | Total Wins: " + playerTwo.totalScore + "</h3><br><h3>" + 0 + "</h3>");
+          $("#player_1_info").empty().append("<h3>" + playerOne.name + " | Total Wins: " + playerOne.totalScore + "</h3><br><h3>" + 0 + "</h3>");
+        }
+
         switchTurn();
+        $("#roll_score").text(0);
+        $("#temp_score").text(0);
+        $("#player_2_info").empty().append("<h3>" + playerTwo.name + " | Total Wins: " + playerTwo.totalScore + "</h3><br><h3>" + playerTwo.score + "</h3>");
+        tempScore = 0;
       }
     });
   });
