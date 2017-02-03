@@ -76,6 +76,8 @@ $(function() {
           tempScore = 0;
           $("#roll_score").text(0);
           $("#temp_score").text(tempScore);
+          $("#player_1_info").removeClass("turn_color");
+          $("#player_2_info").addClass("turn_color");
         } else {
           tempScore += roll;
           $("#temp_score").text(tempScore);
@@ -87,6 +89,8 @@ $(function() {
           tempScore = 0;
           $("#roll_score").text(0);
           $("#temp_score").text(tempScore);
+          $("#player_1_info").addClass("turn_color");
+          $("#player_2_info").removeClass("turn_color");
         } else {
           tempScore += roll;
           $("#temp_score").text(tempScore);
