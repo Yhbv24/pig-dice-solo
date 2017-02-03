@@ -59,6 +59,12 @@ $(function() {
     $("#temp_score").text(tempScore);
     $("#roll_score").text("0");
 
+    if (turn) {
+      $("#player_1_info").addClass("turn_color");
+    } else {
+      $("#player_2_info").addClass("turn_color");
+    }
+
     $("#roll").click(function() {
       var roll = rollDie();
       $("#roll_score").text(roll);
@@ -69,6 +75,7 @@ $(function() {
           switchTurn();
           tempScore = 0;
           $("#roll_score").text(0);
+          $("#temp_score").text(tempScore);
         } else {
           tempScore += roll;
           $("#temp_score").text(tempScore);
@@ -79,6 +86,7 @@ $(function() {
           switchTurn();
           tempScore = 0;
           $("#roll_score").text(0);
+          $("#temp_score").text(tempScore);
         } else {
           tempScore += roll;
           $("#temp_score").text(tempScore);
@@ -88,6 +96,8 @@ $(function() {
 
     $("#end_turn").click(function() {
       if (turn) {
+        $("#player_1_info").removeClass("turn_color");
+        $("#player_2_info").addClass("turn_color");
         playerOne.score += tempScore;
 
         if (playerOne.score >= 100) {
@@ -101,11 +111,13 @@ $(function() {
         }
 
         switchTurn();
-        $("#roll_score").text(0);
-        $("#temp_score").text(0);
         $("#player_1_info").empty().append("<h3>" + playerOne.name + " | Total Wins: " + playerOne.totalScore + "</h3><br><h3>" + playerOne.score + "</h3>");
         tempScore = 0;
+        $("#roll_score").text(0);
+        $("#temp_score").text(tempScore);
       } else if (!turn) {
+        $("#player_2_info").removeClass("turn_color");
+        $("#player_1_info").addClass("turn_color");
         playerTwo.score += tempScore;
 
         if (playerTwo.score >= 100) {
@@ -119,10 +131,10 @@ $(function() {
         }
 
         switchTurn();
-        $("#roll_score").text(0);
-        $("#temp_score").text(0);
         $("#player_2_info").empty().append("<h3>" + playerTwo.name + " | Total Wins: " + playerTwo.totalScore + "</h3><br><h3>" + playerTwo.score + "</h3>");
         tempScore = 0;
+        $("#roll_score").text(0);
+        $("#temp_score").text(tempScore);
       }
     });
   });

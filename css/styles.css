@@ -5,3 +5,7 @@ body {
 #roll_place {
   display: none;
 }
+
+.turn_color { /* Tells players whose turn it is */
+  text-shadow: 0 0 3px #27aeb9;
+}
